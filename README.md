@@ -1,25 +1,37 @@
-# danily-site
+# dangjq-site
 
-Danmily 的个人主页，静态站点，部署在 Vercel。
+党佳琪的个人主页。React + Vite + Tailwind，几个 tab：终端开场（主页）、作品集、OS 桌面、灵感便签、每日打卡 + AI 快讯。
+
+便签墙和每日打卡走 `api/` 下的 Vercel Serverless Functions，数据存在 `@vercel/kv`。
 
 ## 结构
 
 ```
 .
-├── index.html              # 主页：About + Demo 项目入口
-└── demos/
-    └── qa-study/
-        └── index.html      # 电商/生服/广告 新人问答库（学习自测工具）
+├── src/
+│   ├── components/     # TerminalHero / Portfolio / OSDesktop / IdeaNotes / DailyLog / AIDigest ...
+│   ├── lib/             # 数据读写逻辑（dailyLog / ideaNotes / aiDigest）
+│   ├── App.tsx
+│   └── main.tsx
+├── api/                 # /api/entries、/api/notes 的 serverless functions（@vercel/kv）
+├── public/
+│   └── demos/
+│       └── qa-study/    # 电商/生服/广告问答库（静态 demo，随构建原样拷贝）
+└── vite.config.ts
 ```
 
-## 本地预览
+## 本地开发
 
 ```bash
-python3 -m http.server 8080
+npm install
+npm run dev       # 前端开发服务器（api/ 路由本地不可用，需要 vercel dev）
+npm run build     # tsc -b && vite build，产物在 dist/
 ```
 
-然后打开 http://localhost:8080
+## 新增作品集卡片
+
+在 `src/components/Portfolio.tsx` 的 `PROJECTS` 数组里加一项即可；有 `href` 的卡片可点击跳转，没有 `href` 的渲染成纯展示卡片。
 
 ## 新增 demo
 
-在 `demos/<项目名>/` 下放入静态页面，再到根目录 `index.html` 的「Demo 项目」区块里加一张卡片链接过去即可。
+静态 demo 放 `public/demos/<项目名>/`，构建时会被原样拷贝到 `dist/demos/<项目名>/`，Vercel 部署后即可通过 `/demos/<项目名>/` 访问；同时记得在 `Portfolio.tsx` 里加一张卡片链接过去。
